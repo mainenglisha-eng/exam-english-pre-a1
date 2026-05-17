@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <title>Cambridge English: Starters Listening Part 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-blue: #1CB0F6;
+            --duolingo-red: #FF4B4B;
+            --text-dark: #222222;
+            --bg-light: #F4F6F9;
+            --border-gray: #D1D5DB;
+            --correct-color: #2E7D32;
+            --wrong-color: #C62828;
+            --light-blue: #EBF3FC;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === */
+        .top-navbar {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        #exam-container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 8px solid var(--cambridge-blue);
+            margin: 10px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--cambridge-blue);
+            text-align: left;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 10px;
+        }
+        .timer-badge {
+            float: right;
+            background: var(--light-blue);
+            color: var(--cambridge-blue);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            border: 1px solid #B4D3F2;
+        }
+        .timer-badge.time-up {
+            background: #FFEBEE;
+            color: var(--wrong-color);
+            border-color: #FFCDD2;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .instruction {
+            font-size: 1.4rem;
+            background: #FFF9E6;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 6px solid #FFC107;
+            line-height: 1.5;
+            color: #333;
+        }
+        .audio-section {
+            background: #F8F9FA;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .audio-controls {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .audio-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 90px;
+        }
+        .btn-audio {
+            background: var(--cambridge-blue);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+            position: relative;
+        }
+        .btn-audio::after {
+            content: attr(data-remaining);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E65100;
+            color: white;
+            font-size: 11px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        .btn-audio:hover:not(:disabled) {
+            background: var(--cambridge-dark);
+        }
+        .btn-audio:disabled {
+            background: #E0E0E0;
+            color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        .btn-audio.max-reached::after {
+            content: "✓";
+            background: var(--correct-color);
+        }
+        .audio-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+        .audio-status {
+            font-size: 11px;
+            font-weight: 600;
+            color: #777;
+            margin-top: 2px;
+        }
+        .question-block {
+            margin-bottom: 40px;
+            border-bottom: 2px dashed var(--border-gray);
+            padding-bottom: 30px;
+        }
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+            color: #111;
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+        .image-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .main-img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            cursor: zoom-in;
+            border: 1px solid var(--border-gray);
+            pointer-events: auto;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            padding: 10px 15px;
+            background: #FAFAFA;
+            border-radius: 6px;
+            border: 1px solid #E5E7EB;
+        }
+        .option-row:hover {
+            background: var(--light-blue);
+        }
+        .tick-box {
+            width: 40px;
+            height: 40px;
+            border: 2.5px solid var(--cambridge-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            border-radius: 4px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .tick-box:hover:not(.disabled) {
+            background: var(--light-blue);
+            transform: scale(1.05);
+        }
+        .tick-box.selected {
+            background: #EBF3FC;
+            border-color: var(--cambridge-blue);
+        }
+        .tick-box.selected::after {
+            content: '✔';
+            color: var(--cambridge-blue);
+            font-size: 1.8rem;
+        }
+        .tick-box.correct {
+            border-color: var(--correct-color);
+            background: #E8F5E9;
+        }
+        .tick-box.correct::after {
+            content: '✔';
+            color: var(--correct-color);
+            font-size: 1.8rem;
+        }
+        .tick-box.wrong {
+            border-color: var(--wrong-color);
+            background: #FFEBEE;
+        }
+        .tick-box.wrong::after {
+            content: '✘';
+            color: var(--wrong-color);
+            font-size: 1.8rem;
+        }
+        .option-letter {
+            font-weight: 700;
+            color: var(--cambridge-blue);
+            min-width: 25px;
+        }
+        .example {
+            background: #FAFAFA;
+            border: 1px dashed var(--cambridge-blue);
+            border-radius: 6px;
+            padding: 20px;
+        }
+        .example .tick-box { cursor: default; }
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-action {
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 12px 35px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 150px;
+        }
+        #check-btn { background: var(--cambridge-blue); color: white; }
+        #check-btn:hover { background: var(--cambridge-dark); }
+        #fs-btn { background: #616161; color: white; }
+        #fs-btn:hover { background: #424242; }
+        #next-level-btn { background: var(--correct-color); color: white; display: none; }
+        #next-level-btn:hover { background: #1B5E20; }
+        
+        .btn-action:disabled {
+            background: #E0E0E0 !important;
+            color: #9E9E9E !important;
+            cursor: not-allowed;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            cursor: zoom-out;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 4px;
+            object-fit: contain;
+            animation: zoomIn 0.2s ease;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 25px;
+            color: white; font-size: 40px; font-weight: bold; cursor: pointer;
+        }
+        .locked-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        .locked-overlay.show { display: flex; }
+        .option-wrapper { position: relative; display: inline-flex; align-items: center; width: 100%; }
+        
+        :fullscreen #exam-container {
+            max-width: 90%;
+            height: 95vh;
+            overflow-y: auto;
+            border-radius: 0;
+            padding: 50px;
+        }
+        @media (max-width: 600px) {
+            .top-navbar { flex-direction: column; gap: 10px; padding: 12px 20px; }
+            #exam-container { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .timer-badge { float: none; display: inline-block; margin-bottom: 15px; }
+            .question-title { font-size: 1.2rem; }
+            .option-row { font-size: 1.1rem; }
+            .tick-box { width: 35px; height: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === -->
+<nav class="top-navbar">
+    <div class="nav-title">🎧 Listening Part 3</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<div id="imageModal" class="modal notranslate" onclick="closeZoom()">
+    <span class="close-modal notranslate" onclick="closeZoom()">&times;</span>
+    <img class="modal-content notranslate" id="imgZoomed" draggable="false">
+</div>
+
+<div id="exam-container" class="notranslate" translate="no">
+    <div class="timer-badge notranslate" id="timerDisplay">15:00</div>
+    <h1 class="notranslate">Listening Part 3</h1>
+    <p class="instruction notranslate">Listen and tick (✔) the box. There is one example. <strong>Click any image to zoom.</strong></p>
+
+    <div class="audio-section notranslate">
+        <div class="audio-controls">
+            <div class="audio-box">
+                <button id="playExampleBtn" class="btn-audio notranslate" title="EXAMPLE" data-remaining="2" data-max="2">▶</button>
+                <span class="audio-label notranslate">EXAMPLE</span>
+                <span class="audio-status notranslate" id="exampleStatus">Ready</span>
+            </div>
+            <div class="audio-box">
+                <button id="playPartBtn" class="btn-audio notranslate" title="PART III" data-remaining="4" data-max="4">▶</button>
+                <span class="audio-label notranslate">PART III</span>
+                <span class="audio-status notranslate" id="partStatus">Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block example notranslate">
+        <div class="question-title">Example: Which woman is May's mum?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423770/eg._p9c1aa.png" class="main-img notranslate" alt="Example" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><div class="tick-box"></div></div>
+                <div class="option-row"><span class="option-letter">B</span><div class="tick-box"></div></div>
+                <div class="option-row"><span class="option-letter">C</span><div class="tick-box selected"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block notranslate" id="q1">
+        <div class="question-title">1 Which boy is Bill?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423723/01_dnkzmu.png" class="main-img notranslate" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q1', 'A')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">B</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q1', 'B')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">C</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q1', 'C')"></div><div class="locked-overlay">Locked</div></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block notranslate" id="q2">
+        <div class="question-title">2 Which is Ben's house?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423727/02_dsad8c.png" class="main-img notranslate" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q2', 'A')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">B</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q2', 'B')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">C</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q2', 'C')"></div><div class="locked-overlay">Locked</div></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block notranslate" id="q3">
+        <div class="question-title">3 What is Jill's favourite fruit?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423729/03_lr26yk.png" class="main-img notranslate" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q3', 'A')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">B</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q3', 'B')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">C</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q3', 'C')"></div><div class="locked-overlay">Locked</div></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block notranslate" id="q4">
+        <div class="question-title">4 What's Ann's dad wearing?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423728/04_fmoivc.png" class="main-img notranslate" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q4', 'A')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">B</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q4', 'B')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">C</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q4', 'C')"></div><div class="locked-overlay">Locked</div></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-block notranslate" id="q5">
+        <div class="question-title">5 Which is Pat's garden?</div>
+        <div class="content-wrapper">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778423727/05_g6v4qy.png" class="main-img notranslate" onclick="openZoom(this)" draggable="false">
+            </div>
+            <div class="options-container">
+                <div class="option-row"><span class="option-letter">A</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q5', 'A')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">B</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q5', 'B')"></div><div class="locked-overlay">Locked</div></span></div>
+                <div class="option-row"><span class="option-letter">C</span><span class="option-wrapper"><div class="tick-box" onclick="selectOption(this, 'q5', 'C')"></div><div class="locked-overlay">Locked</div></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls notranslate">
+        <button id="fs-btn" class="btn-action notranslate" onclick="toggleFullScreen()">📺 Full Screen</button>
+        <button id="check-btn" class="btn-action notranslate" onclick="checkExam()">✅ Check Answers</button>
+        <button id="next-level-btn" class="btn-action notranslate" onclick="goToNextLevel()">➡️ Next: Vocabulary</button>
+    </div>
+</div>
+
+<audio id="exampleAudio" preload="auto" crossorigin="anonymous" class="notranslate">
+    <source src="https://res.cloudinary.com/dslu7arqa/video/upload/v1778959770/05_explanation_part_III_h2bn7t.mp3" type="audio/mpeg">
+</audio>
+<audio id="partAudio" preload="auto" crossorigin="anonymous" class="notranslate">
+    <source src="https://res.cloudinary.com/dslu7arqa/video/upload/v1778959780/06_PART_III_px2b2c.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // === CONFIGURACIÓN - SIN SESSION TOKEN NI BLOQUEOS ===
+    const EXAM_CONFIG = {
+        TIME_LIMIT: 15 * 60,
+        AUDIO_LIMITS: { example: 2, part: 4 },
+        CATEGORY_KEY: 'exam_l2' // Listening 2 = 10%
+    };
+
+    const CORRECT_ANSWERS = { q1: 'B', q2: 'C', q3: 'A', q4: 'B', q5: 'C' };
+    const TOTAL_QUESTIONS = Object.keys(CORRECT_ANSWERS).length;
+
+    // Obtener nombre del estudiante desde el index principal
+    let studentName = '';
+    let storagePrefix = '';
+    
+    const container = document.getElementById('exam-container');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const exampleAudio = document.getElementById('exampleAudio');
+    const partAudio = document.getElementById('partAudio');
+    const playExampleBtn = document.getElementById('playExampleBtn');
+    const playPartBtn = document.getElementById('playPartBtn');
+    const exampleStatus = document.getElementById('exampleStatus');
+    const partStatus = document.getElementById('partStatus');
+    const checkBtn = document.getElementById('check-btn');
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    const modal = document.getElementById('imageModal');
+    const zoomedImg = document.getElementById('imgZoomed');
+
+    let examEndTime = null, timerInterval = null, examCompleted = false, isEvaluated = false;
+
+    // === INICIALIZACIÓN - SIN BLOQUEOS ===
+    document.addEventListener('DOMContentLoaded', () => {
+        // Obtener nombre del estudiante
+        studentName = localStorage.getItem('exam_student_name');
+        if (!studentName) {
+            alert("⚠️ Please login from the main index first!");
+            window.location.href = '../index.html';
+            return;
+        }
+        
+        // Crear prefijo único por estudiante
+        storagePrefix = EXAM_CONFIG.CATEGORY_KEY + '_' + studentName.replace(/\s+/g, '_') + '_';
+        
+        // Iniciar sin verificar si ya está completado
+        initTimer();
+        initAudioButtons();
+        restoreAnswers();
+        setupSecurity();
+        
+        console.log(`✅ Exercise loaded for: ${studentName}`);
+    });
+
+    function initTimer() {
+        // Siempre iniciar timer desde cero para cada sesión
+        examEndTime = Date.now() + (EXAM_CONFIG.TIME_LIMIT * 1000);
+        startCountdownTimer();
+    }
+
+    function startCountdownTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        const update = () => {
+            if (examCompleted || !examEndTime) return;
+            const remainingMs = examEndTime - Date.now();
+            let remainingSeconds = Math.ceil(remainingMs / 1000);
+            if (remainingSeconds <= 0) {
+                remainingSeconds = 0;
+                timerDisplay.textContent = '00:00';
+                timerDisplay.classList.add('time-up');
+                clearInterval(timerInterval);
+                if (!isEvaluated) checkExam();
+                return;
+            }
+            timerDisplay.textContent = formatTime(remainingSeconds);
+        };
+        update();
+        timerInterval = setInterval(update, 1000);
+    }
+
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) return '00:00';
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const r = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${r}`;
+    }
+
+    function stopTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        examCompleted = true;
+    }
+
+    function initAudioButtons() {
+        // Usar claves únicas por estudiante
+        const exPlaysKey = storagePrefix + 'ex_plays';
+        const ptPlaysKey = storagePrefix + 'pt_plays';
+        
+        const exPlays = parseInt(localStorage.getItem(exPlaysKey) || '0');
+        const ptPlays = parseInt(localStorage.getItem(ptPlaysKey) || '0');
+        
+        updateAudioUI(playExampleBtn, exampleStatus, exPlays, EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        updateAudioUI(playPartBtn, partStatus, ptPlays, EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+        
+        playExampleBtn.onclick = () => playAudio(exampleAudio, playExampleBtn, exampleStatus, 'example', EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        playPartBtn.onclick = () => playAudio(partAudio, playPartBtn, partStatus, 'part', EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+        
+        exampleAudio.onended = () => audioEnded(playExampleBtn, exampleStatus, 'example', EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        partAudio.onended = () => audioEnded(playPartBtn, partStatus, 'part', EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+    }
+
+    function updateAudioUI(btn, status, plays, max, storageKey) {
+        const remaining = Math.max(0, max - plays);
+        btn.dataset.remaining = remaining; 
+        btn.dataset.max = max;
+        if (plays >= max) { 
+            btn.disabled = true; 
+            btn.textContent = '✔'; 
+            btn.classList.add('max-reached'); 
+            status.textContent = 'Finished'; 
+        } else { 
+            btn.disabled = false; 
+            btn.textContent = '▶'; 
+            btn.classList.remove('max-reached'); 
+            status.textContent = `${remaining} left`; 
+        }
+    }
+
+    function playAudio(audio, btn, status, name, max, storageKey) {
+        if (isEvaluated) return;
+        let plays = parseInt(localStorage.getItem(storageKey) || '0');
+        if (plays >= max) return;
+        
+        const other = name === 'example' ? partAudio : exampleAudio;
+        if (!other.paused) { other.pause(); other.currentTime = 0; }
+        
+        if (!audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
+            updateAudioUI(btn, status, plays, max, storageKey);
+        } else {
+            playExampleBtn.textContent = '▶';
+            playPartBtn.textContent = '▶';
+            btn.textContent = '⏸';
+            audio.play().catch(() => updateAudioUI(btn, status, plays, max, storageKey));
+        }
+    }
+
+    function audioEnded(btn, status, name, max, storageKey) {
+        let plays = parseInt(localStorage.getItem(storageKey) || '0'); 
+        plays++;
+        localStorage.setItem(storageKey, plays.toString());
+        updateAudioUI(btn, status, plays, max, storageKey);
+    }
+
+    function selectOption(element, qid, letter) {
+        if (isEvaluated) return;
+        const questionBlock = document.getElementById(qid);
+        const boxes = questionBlock.querySelectorAll('.tick-box');
+        boxes.forEach(box => box.classList.remove('selected'));
+        element.classList.add('selected');
+        saveAnswers();
+    }
+
+    function saveAnswers() {
+        if (isEvaluated) return;
+        const savedAnswers = {};
+        Object.keys(CORRECT_ANSWERS).forEach(qid => {
+            const selected = document.querySelector(`#${qid} .tick-box.selected`);
+            if (selected) {
+                const row = selected.closest('.option-row');
+                savedAnswers[qid] = row ? row.querySelector('.option-letter')?.textContent.trim() : null;
+            }
+        });
+        localStorage.setItem(storagePrefix + 'answers', JSON.stringify(savedAnswers));
+    }
+
+    function restoreAnswers() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(storagePrefix + 'answers') || '{}');
+            Object.keys(saved).forEach(qid => {
+                const letter = saved[qid];
+                if (letter) {
+                    const rows = document.querySelectorAll(`#${qid} .option-row`);
+                    rows.forEach(row => {
+                        if (row.querySelector('.option-letter')?.textContent.trim() === letter) {
+                            row.querySelector('.tick-box')?.classList.add('selected');
+                        }
+                    });
+                }
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    function checkExam() {
+        if (isEvaluated) return;
+        isEvaluated = true;
+        
+        if (!exampleAudio.paused) { exampleAudio.pause(); exampleAudio.currentTime = 0; }
+        if (!partAudio.paused) { partAudio.pause(); partAudio.currentTime = 0; }
+        
+        stopTimer();
+        let score = 0;
+
+        Object.keys(CORRECT_ANSWERS).forEach(qid => {
+            const block = document.getElementById(qid);
+            const boxes = block.querySelectorAll('.tick-box');
+            const overlays = block.querySelectorAll('.locked-overlay');
+            
+            overlays.forEach(o => o.classList.add('show'));
+            
+            let selectedLetter = null;
+            boxes.forEach(box => {
+                box.classList.add('disabled');
+                if (box.classList.contains('selected')) {
+                    const row = box.closest('.option-row');
+                    selectedLetter = row ? row.querySelector('.option-letter')?.textContent.trim() : null;
+                }
+            });
+
+            const rows = block.querySelectorAll('.option-row');
+            rows.forEach(row => {
+                const letter = row.querySelector('.option-letter')?.textContent.trim();
+                const box = row.querySelector('.tick-box');
+                
+                if (letter === CORRECT_ANSWERS[qid]) {
+                    box.className = 'tick-box correct';
+                    if (selectedLetter === CORRECT_ANSWERS[qid]) score++;
+                } else if (letter === selectedLetter) {
+                    box.className = 'tick-box wrong';
+                }
+            });
+        });
+
+        // === GUARDAR RESULTADO EN EL SISTEMA PRINCIPAL ===
+        saveExamResult(score, TOTAL_QUESTIONS);
+
+        checkBtn.style.display = 'none';
+        nextLevelBtn.style.display = 'inline-block';
+        playExampleBtn.disabled = true;
+        playPartBtn.disabled = true;
+
+        setTimeout(() => alert(`🎉 Part Completed!\nYour score: ${score}/${TOTAL_QUESTIONS}\nProgress saved!`), 200);
+    }
+
+    // === FUNCIÓN PARA GUARDAR EN EL SISTEMA PRINCIPAL ===
+    function saveExamResult(correct, total) {
+        const result = {
+            correct: correct,
+            total: total,
+            percentage: Math.round((correct / total) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        // Guardar con la clave que el index.html espera
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        
+        // Disparar actualización en el index
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Result saved: ${correct}/${total} (${result.percentage}%)`);
+    }
+
+    function setupSecurity() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.shiftKey && ['J','I','C'].includes(e.key))) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('contextmenu', (e) => { 
+            if (!e.target.closest('button')) e.preventDefault(); 
+        });
+    }
+
+    function openZoom(img) { 
+        zoomedImg.src = img.src; 
+        modal.classList.add('active'); 
+    }
+    
+    function closeZoom() { 
+        modal.classList.remove('active'); 
+    }
+    
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') closeZoom(); 
+    });
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            (container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen)?.call(container).catch(console.log);
+        } else {
+            (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen)?.call(document);
+        }
+    }
+
+    function goToNextLevel() {
+        window.location.href = "../vocabulary/index.html";
+    }
+</script>
+</body>
+</html>

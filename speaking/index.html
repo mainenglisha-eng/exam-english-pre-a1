@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Practice - Teacher Fer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-red: #FF4B4B;
+            --primary-blue: #185abc;
+            --duolingo-blue: #1cb0f6;
+            --duolingo-dark-blue: #1899d6;
+            --success-green: #78c800;
+            --dark-green: #58a700;
+            --recording-red: #ff4b4b;
+            --dark-red: #ea2b2b;
+            --bg-color: #ebf5ff;
+            --text-color: #3c3c3c;
+            --card-border: #bce0fd;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 22px;
+        }
+
+        /* === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === */
+        .top-navbar {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 12px 0 #d4e6f7;
+            border: 4px solid var(--card-border);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            color: var(--primary-blue);
+            font-size: 3rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            border-left: 6px solid #ffb300;
+            margin-bottom: 35px;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .speaking-block {
+            background: #fdfdfd;
+            border: 3px solid #e5e5e5;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: 0 6px 0 #e5e5e5;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .question-title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3rem;
+            color: #777;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin: 10px 0 25px 0;
+            font-family: 'Comic Neue', cursive;
+            line-height: 1.4;
+        }
+
+        /* === TRANSCRIPT BOX === */
+        .transcript-box {
+            background: #f0f8ff;
+            border: 2px dashed var(--duolingo-blue);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 80px;
+            text-align: left;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            font-style: italic;
+        }
+
+        .transcript-box.recording {
+            border-color: var(--recording-red);
+            background: #fff0f0;
+            animation: pulse-border 1.5s infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--recording-red); }
+            50% { border-color: #ff9999; }
+        }
+
+        .transcript-label {
+            font-weight: bold;
+            color: var(--cambridge-blue);
+            margin-bottom: 8px;
+            display: block;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-duo {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            margin: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-duo:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: none !important;
+        }
+
+        .btn-record {
+            background-color: var(--duolingo-blue);
+            color: white;
+            box-shadow: 0 5px 0 var(--duolingo-dark-blue);
+        }
+
+        .btn-record.recording {
+            background-color: var(--recording-red);
+            box-shadow: 0 5px 0 var(--dark-red);
+            animation: pulse 1.4s infinite ease-in-out;
+        }
+
+        .btn-delete {
+            background-color: #e2e8f0;
+            color: #64748b;
+            box-shadow: 0 5px 0 #cbd5e1;
+        }
+
+        .btn-check {
+            background-color: #ff9800;
+            color: white;
+            box-shadow: 0 5px 0 #e65100;
+        }
+
+        .btn-finish {
+            background-color: var(--success-green);
+            color: white;
+            box-shadow: 0 6px 0 var(--dark-green);
+            font-size: 1.7rem;
+            padding: 15px 60px;
+            margin-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .audio-preview-container {
+            margin-top: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px dashed #cbd5e1;
+            display: none;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 400px;
+            height: 45px;
+        }
+
+        .star-rating {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-top: 10px;
+            font-family: 'Comic Neue', cursive;
+            display: none;
+        }
+
+        .fallback-box {
+            background: #fee2e2;
+            border: 2px solid #f87171;
+            padding: 15px;
+            border-radius: 15px;
+            color: #991b1b;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .fallback-box a {
+            color: #1d4ed8;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; gap: 10px; padding: 12px 20px; }
+            .container { padding: 20px; }
+            h1 { font-size: 2rem; }
+            .question-text { font-size: 1.4rem; }
+            .btn-duo { font-size: 1rem; padding: 10px 20px; }
+            .btn-finish { font-size: 1.3rem; padding: 12px 30px; }
+            .transcript-box { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === -->
+<nav class="top-navbar">
+    <div class="nav-title">🎤 Speaking Practice</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<div class="container">
+    <h1>Speaking Practice</h1>
+    
+    <div class="instructions">
+        <strong>Hello kids! 🌟</strong> Read the questions carefully. Click the blue microphone to start speaking. <strong>Your words will appear on the screen as you speak!</strong> Click again to stop. You can listen to your recording and re-record if needed.
+    </div>
+
+    <div id="exercise-wrapper">
+        
+        <div class="speaking-block" id="block-1">
+            <div class="question-title">Question 1</div>
+            <div class="question-text">"Hello! What is your name and how old are you?"</div>
+            
+            <button class="btn-duo btn-record" id="rec-btn-1" onclick="toggleRecord(1)">🎤 Start Recording</button>
+            
+            <!-- Transcript Box - Visible while recording -->
+            <div class="transcript-box" id="transcript-box-1" style="display:none;">
+                <span class="transcript-label">🎙️ What you're saying:</span>
+                <span id="transcript-1">Listening...</span>
+            </div>
+            
+            <div class="fallback-box" id="fallback-1">
+                ⚠️ Mic error? Don't worry! Click here to record on <a href="https://vocaroo.com/" target="_blank">Vocaroo</a>, then download the MP3.
+            </div>
+
+            <div class="audio-preview-container" id="preview-container-1">
+                <audio controls id="audio-view-1"></audio>
+                <br>
+                <button class="btn-duo btn-check" id="check-btn-1" onclick="analyzeSpeech(1)">Verify Words 🔍</button>
+                <button class="btn-duo btn-delete" onclick="clearAudio(1)">❌ Delete and Re-record</button>
+                <div class="star-rating" id="stars-1">⭐⭐⭐⭐⭐</div>
+                <!-- Display final transcript -->
+                <div style="margin-top:15px; padding:10px; background:#e8f5e9; border-radius:8px; text-align:left;">
+                    <strong style="color:var(--success-green);">📝 Your answer:</strong>
+                    <p id="final-transcript-1" style="margin:8px 0 0 0; font-style:italic;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="speaking-block" id="block-2">
+            <div class="question-title">Question 2</div>
+            <div class="question-text">"What is your favorite color and favorite animal?"</div>
+            
+            <button class="btn-duo btn-record" id="rec-btn-2" onclick="toggleRecord(2)">🎤 Start Recording</button>
+            
+            <div class="transcript-box" id="transcript-box-2" style="display:none;">
+                <span class="transcript-label">🎙️ What you're saying:</span>
+                <span id="transcript-2">Listening...</span>
+            </div>
+            
+            <div class="fallback-box" id="fallback-2">
+                ⚠️ Mic error? Don't worry! Click here to record on <a href="https://vocaroo.com/" target="_blank">Vocaroo</a>, then download the MP3.
+            </div>
+
+            <div class="audio-preview-container" id="preview-container-2">
+                <audio controls id="audio-view-2"></audio>
+                <br>
+                <button class="btn-duo btn-check" id="check-btn-2" onclick="analyzeSpeech(2)">Verify Words 🔍</button>
+                <button class="btn-duo btn-delete" onclick="clearAudio(2)">❌ Delete and Re-record</button>
+                <div class="star-rating" id="stars-2">⭐⭐⭐⭐⭐</div>
+                <div style="margin-top:15px; padding:10px; background:#e8f5e9; border-radius:8px; text-align:left;">
+                    <strong style="color:var(--success-green);">📝 Your answer:</strong>
+                    <p id="final-transcript-2" style="margin:8px 0 0 0; font-style:italic;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="speaking-block" id="block-3">
+            <div class="question-title">Question 3</div>
+            <div class="question-text">"What is your favorite hobby and what do you love playing?"</div>
+            
+            <button class="btn-duo btn-record" id="rec-btn-3" onclick="toggleRecord(3)">🎤 Start Recording</button>
+            
+            <div class="transcript-box" id="transcript-box-3" style="display:none;">
+                <span class="transcript-label">🎙️ What you're saying:</span>
+                <span id="transcript-3">Listening...</span>
+            </div>
+            
+            <div class="fallback-box" id="fallback-3">
+                ⚠️ Mic error? Don't worry! Click here to record on <a href="https://vocaroo.com/" target="_blank">Vocaroo</a>, then download the MP3.
+            </div>
+
+            <div class="audio-preview-container" id="preview-container-3">
+                <audio controls id="audio-view-3"></audio>
+                <br>
+                <button class="btn-duo btn-check" id="check-btn-3" onclick="analyzeSpeech(3)">Verify Words 🔍</button>
+                <button class="btn-duo btn-delete" onclick="clearAudio(3)">❌ Delete and Re-record</button>
+                <div class="star-rating" id="stars-3">⭐⭐⭐⭐⭐</div>
+                <div style="margin-top:15px; padding:10px; background:#e8f5e9; border-radius:8px; text-align:left;">
+                    <strong style="color:var(--success-green);">📝 Your answer:</strong>
+                    <p id="final-transcript-3" style="margin:8px 0 0 0; font-style:italic;"></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="btn-duo btn-finish" id="finish-master-btn" onclick="finishAndSendAll()">FINISH 🏁</button>
+</div>
+
+<script>
+    // === CONFIGURACIÓN ===
+    const EXAM_CONFIG = {
+        CATEGORY_KEY: 'exam_s'  // ✅ Speaking = 20%
+    };
+
+    // Obtener nombre desde localStorage
+    const studentName = localStorage.getItem('exam_student_name') || "Student";
+
+    // Diccionario de palabras objetivo para evaluación
+    const targetKeywords = [
+        "i", "my", "name", "is", "years", "old", "favorite", "colour", "color", "animal",
+        "cat", "dog", "hamster", "horse", "snake", "chicken", "pig", "parrot", "donkey", "goose", "fish",
+        "hobby", "hobbies", "play", "playing", "soccer", "like", "love", "tennis", "basketball", "baseball",
+        "swimming", "riding", "bike", "reading", "sleeping", "video", "games", "blue", "red", "green", "yellow"
+    ];
+
+    // Variables de control
+    let mediaRecorders = {1: null, 2: null, 3: null};
+    let audioChunks = {1: [], 2: [], 3: []};
+    let recordedBlobs = {1: null, 2: null, 3: null};
+    let recognitions = {1: null, 2: null, 3: null};
+    let transcripts = {1: "", 2: "", 3: ""};
+    let matchedWordsList = {1: [], 2: [], 3: []};
+    let isRecording = {1: false, 2: false, 3: false};
+
+    window.onload = function() {
+        setupAntiCheat();
+    };
+
+    function setupAntiCheat() {
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    async function toggleRecord(id) {
+        const btn = document.getElementById(`rec-btn-${id}`);
+        const transcriptBox = document.getElementById(`transcript-box-${id}`);
+        
+        if (!isRecording[id]) {
+            // START RECORDING
+            audioChunks[id] = [];
+            transcripts[id] = "";
+            matchedWordsList[id] = [];
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorders[id] = new MediaRecorder(stream);
+                
+                mediaRecorders[id].ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks[id].push(e.data);
+                };
+
+                mediaRecorders[id].onstop = () => {
+                    recordedBlobs[id] = new Blob(audioChunks[id], { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(recordedBlobs[id]);
+                    document.getElementById(`audio-view-${id}`).src = audioUrl;
+                    
+                    // Show audio player and final transcript
+                    btn.style.display = 'none';
+                    transcriptBox.style.display = 'none';
+                    document.getElementById(`preview-container-${id}`).style.display = 'block';
+                    document.getElementById(`final-transcript-${id}`).textContent = transcripts[id] || "No speech detected";
+                };
+
+                // Setup speech recognition with REAL-TIME display
+                setupSpeechRecognition(id);
+
+                // Start recording
+                mediaRecorders[id].start();
+                if (recognitions[id]) recognitions[id].start();
+
+                // Update UI
+                isRecording[id] = true;
+                btn.classList.add('recording');
+                btn.innerText = "⏹ Stop Recording";
+                transcriptBox.style.display = 'block';
+                transcriptBox.classList.add('recording');
+
+            } catch (err) {
+                console.error("Microphone access failed: ", err);
+                document.getElementById(`fallback-${id}`).style.display = 'block';
+            }
+        } else {
+            // STOP RECORDING
+            if (mediaRecorders[id] && mediaRecorders[id].state !== "inactive") {
+                mediaRecorders[id].stop();
+            }
+            if (recognitions[id]) {
+                recognitions[id].stop();
+            }
+            
+            isRecording[id] = false;
+            btn.classList.remove('recording');
+            btn.innerText = "🎤 Start Recording";
+            transcriptBox.classList.remove('recording');
+        }
+    }
+
+    function setupSpeechRecognition(id) {
+        if ('webkitSpeechRecognition' in window || 'speechRecognition' in window) {
+            const SpeechRecognition = window.webkitSpeechRecognition || window.speechRecognition;
+            recognitions[id] = new SpeechRecognition();
+            recognitions[id].continuous = true;
+            recognitions[id].interimResults = true;  // ✅ Show results as you speak
+            recognitions[id].lang = 'en-US';
+
+            recognitions[id].onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                // Update transcript display in REAL-TIME
+                transcripts[id] = (transcripts[id] + finalTranscript).trim();
+                const displayText = transcripts[id] + (interimTranscript ? ' ' + interimTranscript : '');
+                document.getElementById(`transcript-${id}`).textContent = displayText || 'Listening...';
+
+                // Match keywords
+                finalTranscript.toLowerCase().split(' ').forEach(word => {
+                    const cleanWord = word.replace(/[.,!?]/g, '');
+                    if (targetKeywords.includes(cleanWord) && !matchedWordsList[id].includes(cleanWord)) {
+                        matchedWordsList[id].push(cleanWord);
+                    }
+                });
+            };
+
+            recognitions[id].onerror = (event) => {
+                console.error('Speech recognition error', event.error);
+                document.getElementById(`transcript-${id}`).textContent = 'Error detecting speech. Try again.';
+            };
+        } else {
+            alert("Speech recognition not supported in this browser. Try Chrome or Edge.");
+        }
+    }
+
+    function analyzeSpeech(id) {
+        const starBox = document.getElementById(`stars-${id}`);
+        const foundCount = matchedWordsList[id].length;
+        
+        starBox.style.display = 'block';
+        
+        if (foundCount >= 5) {
+            starBox.innerText = "⭐⭐⭐⭐⭐ Excellent! Great vocabulary!";
+            starBox.style.color = "#78c800";
+        } else if (foundCount >= 3) {
+            starBox.innerText = "⭐⭐⭐⭐ Good Job!";
+            starBox.style.color = "#ff9800";
+        } else if (foundCount >= 1) {
+            starBox.innerText = "⭐⭐ Keep Practicing!";
+            starBox.style.color = "#ff6b6b";
+        } else {
+            starBox.innerText = "⭐ Try speaking more!";
+            starBox.style.color = "#888";
+        }
+    }
+
+    function clearAudio(id) {
+        recordedBlobs[id] = null;
+        audioChunks[id] = [];
+        transcripts[id] = "";
+        matchedWordsList[id] = [];
+        isRecording[id] = false;
+        
+        // Stop any active recording
+        if (mediaRecorders[id] && mediaRecorders[id].state !== "inactive") {
+            mediaRecorders[id].stop();
+        }
+        if (recognitions[id]) {
+            recognitions[id].stop();
+        }
+        
+        document.getElementById(`preview-container-${id}`).style.display = 'none';
+        document.getElementById(`stars-${id}`).style.display = 'none';
+        document.getElementById(`transcript-box-${id}`).style.display = 'none';
+        document.getElementById(`final-transcript-${id}`).textContent = '';
+        
+        const recordBtn = document.getElementById(`rec-btn-${id}`);
+        recordBtn.style.display = 'inline-flex';
+        recordBtn.classList.remove('recording');
+        recordBtn.innerText = "🎤 Start Recording";
+    }
+
+    // === GUARDAR RESULTADO EN EL SISTEMA PRINCIPAL ===
+    function saveExamResult() {
+        // Count how many questions were completed (have audio)
+        let completedQuestions = 0;
+        let totalScore = 0;
+        
+        for (let i = 1; i <= 3; i++) {
+            if (recordedBlobs[i]) {
+                completedQuestions++;
+                // Score based on keywords found (max 5 per question)
+                const questionScore = Math.min(matchedWordsList[i].length, 5);
+                totalScore += questionScore;
+            }
+        }
+        
+        // Calculate percentage (max 15 points = 3 questions × 5 keywords)
+        const maxScore = 15;
+        const percentage = Math.round((totalScore / maxScore) * 100);
+        
+        const result = {
+            correct: totalScore,
+            total: maxScore,
+            percentage: percentage,
+            completedQuestions: completedQuestions,
+            transcripts: transcripts,
+            keywords: matchedWordsList,
+            timestamp: new Date().toISOString()
+        };
+        
+        // ✅ Guardar con la clave correcta: exam_s_[nombre]
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Speaking result saved: ${totalScore}/${maxScore} (${percentage}%)`);
+        console.log('Transcripts:', transcripts);
+    }
+
+    // Función FINISH
+    async function finishAndSendAll() {
+        // Check if at least one question was answered
+        const completedCount = [1, 2, 3].filter(id => recordedBlobs[id]).length;
+        
+        if (completedCount === 0) {
+            alert("⚠️ Please record at least one answer before finishing!");
+            return;
+        }
+        
+        const masterBtn = document.getElementById('finish-master-btn');
+        masterBtn.disabled = true;
+        masterBtn.innerText = "Saving your answers...";
+
+        // Save results
+        saveExamResult();
+
+        // Show success message
+        setTimeout(() => {
+            alert(`🎉 Great job, ${studentName}!\n\nYou completed ${completedCount}/3 questions.\nYour speaking practice has been saved!\n\nClick OK to return to the main menu.`);
+            window.location.href = "../index.html";
+        }, 500);
+    }
+</script>
+</body>
+</html>

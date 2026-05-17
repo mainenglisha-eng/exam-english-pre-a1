@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge Movers: The Magic Garden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-red: #FF4B4B;
+            --duolingo-blue: #1CB0F6;
+            --success-green: #58CC02;
+            --bg-color: #F0F4F8;
+            --white: #FFFFFF;
+            --text-dark: #3C3C3C;
+            --border-gray: #E5E5E5;
+        }
+
+        * { box-sizing: border-box; user-select: none; -webkit-user-drag: none; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* === NAVBAR SUPERIOR === */
+        .top-navbar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        /* === TIMER === */
+        .timer-badge {
+            display: block;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--cambridge-blue), var(--cambridge-dark));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            width: fit-content;
+            box-shadow: 0 4px 12px rgba(0,47,108,0.35);
+            border: 3px solid #001a3d;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .timer-badge.time-up {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* === CONTENEDOR === */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--border-gray);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--cambridge-blue);
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 0 0 25px 0;
+        }
+
+        /* === HISTORIA - LETRA MÁS GRANDE === */
+        .story-box {
+            background: #fdfdfd;
+            border: 2px solid var(--border-gray);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            line-height: 2;
+            font-size: 1.5rem; /* ✅ LETRA MÁS GRANDE (antes 1.1rem) */
+            font-weight: 500;
+        }
+
+        /* ✅ IMAGEN QUE OCUPA TODO EL CONTENEDOR */
+        .zoom-container {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 25px 0;
+            cursor: zoom-in;
+            border: none; /* ✅ Sin borde */
+            transition: transform 0.2s;
+            text-align: center;
+            background: var(--border-gray);
+        }
+
+        .zoom-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .zoom-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .zoom-container:active img {
+            transform: scale(1.1);
+        }
+
+        /* === PREGUNTAS === */
+        .quiz-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            margin: 25px 0;
+        }
+
+        .q-row {
+            background: white;
+            transition: 0.2s;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .q-text {
+            padding: 18px 20px;
+            border: 2px solid var(--border-gray);
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            font-size: 1.3rem; /* ✅ Letra más grande */
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .q-actions {
+            padding: 18px 20px;
+            border: 2px solid var(--border-gray);
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+            white-space: nowrap;
+            text-align: right;
+            background: #f8f9fa;
+        }
+
+        /* === BOTONES === */
+        .btn-duo {
+            padding: 10px 28px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 12px;
+            border: 2px solid var(--border-gray);
+            background: white;
+            color: var(--text-dark);
+            box-shadow: 0 4px 0 var(--border-gray);
+            transition: all 0.1s;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-duo.selected-true {
+            background: var(--success-green);
+            color: white;
+            border-color: #44a702;
+            box-shadow: 0 4px 0 #44a702;
+        }
+
+        .btn-duo.selected-false {
+            background: var(--duolingo-red);
+            color: white;
+            border-color: #c41e1e;
+            box-shadow: 0 4px 0 #c41e1e;
+        }
+
+        .btn-duo:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 0 0;
+        }
+
+        .btn-duo:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* === BOTÓN PRINCIPAL === */
+        #main-action-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--cambridge-blue), var(--cambridge-dark));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--cambridge-dark);
+            margin-top: 35px;
+            transition: all 0.2s;
+        }
+
+        #main-action-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 var(--cambridge-dark);
+        }
+
+        #main-action-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 var(--cambridge-dark);
+        }
+
+        #main-action-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* === FEEDBACK === */
+        .correct-row {
+            background-color: #e8f5e9 !important;
+            border: 2px solid var(--success-green) !important;
+        }
+
+        .incorrect-row {
+            background-color: #ffebee !important;
+            border: 2px solid var(--duolingo-red) !important;
+        }
+
+        /* === FULLSCREEN === */
+        .fullscreen-btn {
+            background: none;
+            border: 2px solid var(--border-gray);
+            border-radius: 10px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--border-gray);
+        }
+
+        /* === MODAL ZOOM === */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            cursor: zoom-out;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 15px;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0,0,0,0.6);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: var(--duolingo-red);
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; gap: 12px; padding: 12px 20px; }
+            .container { padding: 25px; }
+            h1 { font-size: 1.8rem; }
+            .story-box { font-size: 1.3rem; padding: 20px; } /* ✅ Responsive */
+            .q-text { font-size: 1.1rem; padding: 12px; }
+            .q-actions { padding: 12px; }
+            .btn-duo { font-size: 0.9rem; padding: 8px 20px; }
+            #main-action-btn { font-size: 1.2rem; padding: 15px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<!-- === NAVBAR SUPERIOR === -->
+<nav class="top-navbar">
+    <div class="nav-title">📖 The Magic Garden</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<!-- === MODAL ZOOM === -->
+<div id="imageModal" class="modal" onclick="closeZoomOnOverlay(event)">
+    <span class="close-modal" onclick="closeZoom()">&times;</span>
+    <img class="modal-content" id="imgZoomed" draggable="false">
+</div>
+
+<!-- === CONTENEDOR PRINCIPAL === -->
+<div class="container">
+    <h1>The Magic Garden Adventure</h1>
+    
+    <!-- Timer 20 minutos -->
+    <div class="timer-badge" id="timer-display">20:00</div>
+
+    <div class="story-box">
+        <div class="zoom-container">
+            <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938118/the_magic_garden_01_iykft6.jpg" alt="Story 1" onclick="openZoom(this)">
+        </div>
+        <p>Leo and Mia are at the park with their big dog, Barnaby. The sun is very hot, so they sit under a large, green tree. Suddenly, Barnaby finds a small, blue door in the grass!</p>
+
+        <div class="zoom-container">
+            <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938118/the_magic_garden_02_f2msnb.jpg" alt="Story 2" onclick="openZoom(this)">
+        </div>
+        <p>Leo opens the door. Inside, they see flowers that can sing and a purple pond with orange fish. "Look!" shouts Mia. "The fish are wearing tiny hats!"</p>
+
+        <div class="zoom-container">
+            <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938118/the_magic_garden_03_bwjyup.jpg" alt="Story 3" onclick="openZoom(this)">
+        </div>
+        <p>Leo and Mia drink pink lemonade and eat chocolate cookies. It is the best day ever.</p>
+    </div>
+
+    <h3 style="font-family: 'Fredoka One', cursive; color: var(--cambridge-blue); margin: 30px 0 20px; font-size: 1.8rem;">True or False?</h3>
+    
+    <table class="quiz-table" id="quizTable"></table>
+
+    <button id="main-action-btn" onclick="handleMainAction()">✅ CHECK Answers</button>
+</div>
+
+<script>
+    // === CONFIGURACIÓN ===
+    const EXAM_CONFIG = {
+        TIME_LIMIT: 20 * 60,  // 20 minutos = 1200 segundos
+        CATEGORY_KEY: 'exam_r'  // Reading = 20% del total
+    };
+
+    const questions = [
+        { q: "Leo and Mia are at the beach.", a: false },
+        { q: "Barnaby is a big dog.", a: true },
+        { q: "The children sit under a green tree.", a: true },
+        { q: "Barnaby finds a small, red door.", a: false },
+        { q: "The flowers in the garden can sing.", a: true },
+        { q: "The pond is purple.", a: true },
+        { q: "The fish are wearing tiny shoes.", a: false },
+        { q: "A friendly frog speaks to the children.", a: true },
+        { q: "The children drink apple juice.", a: false },
+        { q: "Leo and Mia eat chocolate cookies.", a: true }
+    ];
+
+    const TOTAL_QUESTIONS = questions.length;
+
+    // Variables globales
+    let studentName = '';
+    let timeLeft = EXAM_CONFIG.TIME_LIMIT;
+    let timerInterval = null;
+    let isEvaluated = false;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    const table = document.getElementById('quizTable');
+    const timerDisplay = document.getElementById('timer-display');
+    const mainBtn = document.getElementById('main-action-btn');
+    const modal = document.getElementById('imageModal');
+    const zoomedImg = document.getElementById('imgZoomed');
+
+    // === INICIALIZACIÓN ===
+    document.addEventListener('DOMContentLoaded', () => {
+        // Obtener nombre del estudiante desde el index principal
+        studentName = localStorage.getItem('exam_student_name');
+        if (!studentName) {
+            alert("⚠️ Please login from the main index first!");
+            window.location.href = '../index.html';
+            return;
+        }
+        
+        console.log(`✅ Magic Garden loaded for: ${studentName}`);
+        
+        // Crear preguntas
+        initQuestions();
+        
+        // Iniciar timer regresivo de 20 minutos
+        initTimer();
+    });
+
+    function initQuestions() {
+        questions.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.className = 'q-row';
+            row.id = `row-${index}`;
+            row.innerHTML = `
+                <td class="q-text">${index + 1}. ${item.q}</td>
+                <td class="q-actions">
+                    <button class="btn-duo" id="btn-t-${index}" onclick="setAnswer(${index}, true)">True</button>
+                    <button class="btn-duo" id="btn-f-${index}" onclick="setAnswer(${index}, false)">False</button>
+                </td>
+            `;
+            table.appendChild(row);
+        });
+    }
+
+    function setAnswer(index, val) {
+        if (isEvaluated) return;
+        userAnswers[index] = val;
+        
+        // Actualizar estilo de botones
+        document.getElementById(`btn-t-${index}`).className = 
+            val === true ? 'btn-duo selected-true' : 'btn-duo';
+        document.getElementById(`btn-f-${index}`).className = 
+            val === false ? 'btn-duo selected-false' : 'btn-duo';
+    }
+
+    // ⏱️ TIMER REGRESIVO 20:00 → 00:00
+    function initTimer() {
+        timeLeft = EXAM_CONFIG.TIME_LIMIT;
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (isEvaluated) {
+                clearInterval(timerInterval);
+                return;
+            }
+            
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.classList.add('time-up');
+                if (!isEvaluated) finishExercise();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function handleMainAction() {
+        if (mainBtn.innerText === "✅ CHECK Answers" || mainBtn.innerText === "CHECK") {
+            finishExercise();
+        } else {
+            window.location.href = "../index.html";
+        }
+    }
+
+    function finishExercise() {
+        if (isEvaluated) return;
+        isEvaluated = true;
+        
+        clearInterval(timerInterval);
+        let score = 0;
+
+        // Corregir respuestas
+        questions.forEach((item, index) => {
+            const row = document.getElementById(`row-${index}`);
+            
+            // Deshabilitar botones
+            document.getElementById(`btn-t-${index}`).disabled = true;
+            document.getElementById(`btn-f-${index}`).disabled = true;
+            
+            if (userAnswers[index] === item.a) {
+                score++;
+                row.classList.add('correct-row');
+            } else {
+                row.classList.add('incorrect-row');
+            }
+        });
+
+        // Guardar resultado en el sistema principal
+        saveExamResult(score, TOTAL_QUESTIONS);
+
+        // Cambiar botón a FINISH
+        mainBtn.innerText = "✅ FINISH - Return to Menu";
+        mainBtn.style.background = "var(--success-green)";
+        mainBtn.style.boxShadow = "0 5px 0 #44a702";
+        
+        // Mostrar mensaje
+        setTimeout(() => {
+            alert(`🎉 Reading Completed!\nYour score: ${score}/${TOTAL_QUESTIONS}\nProgress saved automatically!`);
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 300);
+    }
+
+    // === GUARDAR RESULTADO EN EL SISTEMA PRINCIPAL ===
+    function saveExamResult(correct, total) {
+        const result = {
+            correct: correct,
+            total: total,
+            percentage: Math.round((correct / total) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        // Guardar con la clave que el index.html espera: exam_r_[nombre]
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        
+        // Disparar actualización en el index
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Result saved: ${correct}/${total} (${result.percentage}%)`);
+    }
+
+    // 🔍 ZOOM DE IMÁGENES
+    function openZoom(imgEl) {
+        modal.classList.add('active');
+        zoomedImg.src = imgEl.src;
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeZoom() { 
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        zoomedImg.src = '';
+    }
+    
+    function closeZoomOnOverlay(event) {
+        if (event.target === modal) closeZoom();
+    }
+    
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') closeZoom(); 
+    });
+
+    // 🔐 Seguridad básica
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+            return false;
+        }
+    };
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+</script>
+
+</body>
+</html>

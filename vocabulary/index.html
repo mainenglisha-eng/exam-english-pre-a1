@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge Movers: Vocabulary Part 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-red: #FF4B4B;
+            --primary-color: #ff6f61;
+            --secondary-color: #4ecdc4;
+            --bg-color: #eef2f7;
+            --text-color: #2d3436;
+            --success-color: #2ecc71;
+            --fail-color: #e74c3c;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            font-size: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === */
+        .top-navbar {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        /* Temporizador Estilizado */
+        .timer-badge {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        #timer-display {
+            font-family: 'Comic Neue', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color);
+            min-width: 70px;
+        }
+
+        .timer-warning { color: var(--fail-color) !important; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 8px solid #ffeaa7;
+            min-height: 650px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 38px;
+            margin: 0 0 15px 0;
+        }
+
+        .instruction {
+            background-color: #fff9db;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            border-left: 6px solid #f59f00;
+            margin-bottom: 25px;
+        }
+
+        .slide {
+            display: none;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .img-container {
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 10px auto;
+            cursor: zoom-in;
+            border: 4px solid #eee;
+            display: inline-block;
+            max-width: 320px;
+            background: white;
+        }
+
+        .img-container img {
+            width: 100%;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .img-container:active img { transform: scale(1.6); }
+
+        .sentence {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 20px 0;
+            font-family: 'Comic Neue', cursive;
+            color: #444;
+        }
+
+        .choice-box {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-choice {
+            font-size: 45px;
+            width: 100px;
+            height: 80px;
+            cursor: pointer;
+            border: 4px solid #eee;
+            background: white;
+            border-radius: 20px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 0 #eee;
+        }
+
+        .btn-choice.tick.selected { 
+            background-color: var(--success-color); color: white; border-color: #27ae60; box-shadow: 0 6px 0 #1e8449;
+        }
+        
+        .btn-choice.cross.selected { 
+            background-color: var(--fail-color); color: white; border-color: #c0392b; box-shadow: 0 6px 0 #922b21;
+        }
+        
+        .btn-choice:disabled { cursor: not-allowed; opacity: 0.8; }
+
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .btn-nav {
+            background: #3b5998;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Comic Neue', cursive;
+            box-shadow: 0 4px 0 #2d4373;
+        }
+
+        .btn-nav:disabled { background: #ccc; box-shadow: 0 4px 0 #999; cursor: not-allowed; }
+
+        .example-label {
+            color: #f76707; font-weight: bold; font-size: 20px; display: block; margin-bottom: 10px; text-transform: uppercase;
+        }
+
+        #score-text {
+            font-family: 'Comic Neue', cursive;
+            font-size: 50px;
+            color: var(--secondary-color);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; gap: 10px; padding: 12px 20px; }
+            .timer-badge { top: 140px; right: 10px; }
+            .container { padding: 20px; }
+            h1 { font-size: 28px; }
+            .sentence { font-size: 22px; }
+            .btn-choice { width: 80px; height: 65px; font-size: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === -->
+<nav class="top-navbar">
+    <div class="nav-title">📚 Vocabulary Part 1</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<div class="timer-badge" id="timer-container">
+    <span style="font-size: 20px;">⏱️</span>
+    <div id="timer-display">10:00</div>
+</div>
+
+<div class="container">
+    <h1>Vocabulary Exercise</h1>
+    
+    <div class="instruction">
+        <strong>PART 1:</strong> Look and read. Choose a tick (✔) or a cross (✘) in the box. There are two examples.
+    </div>
+
+    <div id="quiz-slides">
+        <!-- Example 1 -->
+        <div class="slide active">
+            <span class="example-label">Example 1</span>
+            <div class="img-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938746/grapes_rzboa5.jpg">
+            </div>
+            <div class="sentence">These are grapes.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick selected" disabled>✔</button>
+                <button class="btn-choice" disabled>✘</button>
+            </div>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="slide">
+            <span class="example-label">Example 2</span>
+            <div class="img-container">
+                <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938745/shoes_eatcqs.jpg">
+            </div>
+            <div class="sentence">This is a cap.</div>
+            <div class="choice-box">
+                <button class="btn-choice" disabled>✔</button>
+                <button class="btn-choice cross selected" disabled>✘</button>
+            </div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="slide" data-id="q1" data-answer="false">
+            <div class="img-container"><img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938744/helicopter_lczijc.jpg"></div>
+            <div class="sentence">1 This is a plane.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick" onclick="mark(this, true)">✔</button>
+                <button class="btn-choice cross" onclick="mark(this, false)">✘</button>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="slide" data-id="q2" data-answer="true">
+            <div class="img-container"><img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938743/a_hand_kb9daj.jpg"></div>
+            <div class="sentence">2 This is a hand.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick" onclick="mark(this, true)">✔</button>
+                <button class="btn-choice cross" onclick="mark(this, false)">✘</button>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="slide" data-id="q3" data-answer="true">
+            <div class="img-container"><img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938743/rulers_tkspvz.jpg"></div>
+            <div class="sentence">3 These are rulers.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick" onclick="mark(this, true)">✔</button>
+                <button class="btn-choice cross" onclick="mark(this, false)">✘</button>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="slide" data-id="q4" data-answer="true">
+            <div class="img-container"><img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938743/jellyfish_rva7sz.jpg"></div>
+            <div class="sentence">4 This is a jellyfish.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick" onclick="mark(this, true)">✔</button>
+                <button class="btn-choice cross" onclick="mark(this, false)">✘</button>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="slide" data-id="q5" data-answer="false">
+            <div class="img-container"><img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778938743/kites_okrm1x.jpg"></div>
+            <div class="sentence">5 These are balloons.</div>
+            <div class="choice-box">
+                <button class="btn-choice tick" onclick="mark(this, true)">✔</button>
+                <button class="btn-choice cross" onclick="mark(this, false)">✘</button>
+            </div>
+        </div>
+
+        <!-- Final Slide -->
+        <div class="slide" id="final-slide">
+            <div style="margin-top: 50px; text-align: center;">
+                <h2 style="font-family: 'Comic Neue'; font-size: 40px;">Part 1 Finished!</h2>
+                <div id="score-text">Score: 0 / 5</div>
+                <p style="color: #666; font-size: 22px;">Your results have been saved successfully.</p>
+                <button class="btn-nav" 
+                        style="background:var(--success-color); box-shadow: 0 4px 0 #1e8449; margin-top:20px; padding: 15px 50px; font-size: 24px;" 
+                        onclick="sendToInicio()">
+                    FINISH
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <button class="btn-nav" id="prevBtn" onclick="move(-1)" disabled>Back</button>
+        <button class="btn-nav" id="nextBtn" onclick="move(1)">Next</button>
+    </div>
+</div>
+
+<script>
+    // === CONFIGURACIÓN ===
+    const EXAM_CONFIG = {
+        TIME_LIMIT: 10 * 60,  // 10 minutos
+        CATEGORY_KEY: 'exam_v'  // ✅ CAMBIADO: 'exam_v' para Vocabulary (20%)
+    };
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const studentName = localStorage.getItem('exam_student_name') || "User";
+    
+    // Timer Logic (10 minutes)
+    let timeLeft = EXAM_CONFIG.TIME_LIMIT;
+    let timerInterval = null;
+    let isEvaluated = false;
+    
+    const timerDisplay = document.getElementById('timer-display');
+    const timerContainer = document.getElementById('timer-container');
+
+    // ⏱️ TIMER REGRESIVO
+    function initTimer() {
+        timeLeft = EXAM_CONFIG.TIME_LIMIT;
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (isEvaluated) {
+                clearInterval(timerInterval);
+                return;
+            }
+            
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.classList.add('timer-warning');
+                if (!isEvaluated) finishQuiz();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    window.onload = () => {
+        initTimer();
+        
+        slides.forEach(slide => {
+            const qId = slide.dataset.id;
+            if (qId) {
+                const saved = localStorage.getItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName + '_' + qId);
+                if (saved !== null) {
+                    applyLock(saved === 'true' ? slide.querySelector('.tick') : slide.querySelector('.cross'));
+                }
+            }
+        });
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    };
+
+    function move(step) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide += step;
+        
+        if (currentSlide === slides.length - 1) {
+            clearInterval(timerInterval);
+            timerContainer.style.display = 'none';
+            calculateScore();
+        }
+        
+        slides[currentSlide].classList.add('active');
+        document.getElementById('prevBtn').disabled = (currentSlide === 0);
+        document.getElementById('nextBtn').style.display = (currentSlide >= slides.length - 1) ? 'none' : 'block';
+    }
+
+    function mark(btn, val) {
+        if (isEvaluated) return;
+        
+        const slide = btn.closest('.slide');
+        const qId = slide.dataset.id;
+        
+        // Guardar con la clave correcta
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName + '_' + qId, val);
+        
+        applyLock(btn);
+        setTimeout(() => { if(currentSlide < slides.length - 1) move(1); }, 600);
+    }
+
+    function applyLock(btn) {
+        const allBtns = btn.parentElement.querySelectorAll('.btn-choice');
+        allBtns.forEach(b => { b.classList.remove('selected'); b.disabled = true; });
+        btn.classList.add('selected');
+    }
+
+    function calculateScore() {
+        let score = 0;
+        const totalQuestions = 5;
+        
+        slides.forEach(slide => {
+            const qId = slide.dataset.id;
+            if (qId) {
+                const userAnswer = localStorage.getItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName + '_' + qId);
+                if (userAnswer === slide.dataset.answer) {
+                    score++;
+                }
+            }
+        });
+        
+        // Guardar resultado final en el sistema principal
+        saveExamResult(score, totalQuestions);
+        
+        document.getElementById('score-text').innerText = `Score: ${score} / ${totalQuestions}`;
+    }
+
+    // === GUARDAR RESULTADO EN EL SISTEMA PRINCIPAL ===
+    function saveExamResult(correct, total) {
+        const result = {
+            correct: correct,
+            total: total,
+            percentage: Math.round((correct / total) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        // ✅ Guardar con la clave correcta: exam_v_[nombre]
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Result saved to ${EXAM_CONFIG.CATEGORY_KEY}: ${correct}/${total} (${result.percentage}%)`);
+    }
+
+    function finishQuiz() {
+        if (isEvaluated) return;
+        isEvaluated = true;
+        
+        clearInterval(timerInterval);
+        timerContainer.style.display = 'none';
+        
+        slides[currentSlide].classList.remove('active');
+        currentSlide = slides.length - 1;
+        slides[currentSlide].classList.add('active');
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('prevBtn').style.display = 'none';
+        
+        calculateScore();
+    }
+
+    function sendToInicio() {
+        window.location.href = "../index.html";
+    }
+</script>
+
+</body>
+</html>

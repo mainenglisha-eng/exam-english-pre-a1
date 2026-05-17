@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <title>Movers Writing Part 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-red: #FF4B4B;
+            --duolingo-blue: #1CB0F6;
+            --success-green: #58CC02;
+            --bg-color: #F0F4F8;
+            --white: #FFFFFF;
+            --text-dark: #3C3C3C;
+            --border-gray: #E5E5E5;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* === NAVBAR SUPERIOR === */
+        .top-navbar {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        /* === CONTENEDOR PRINCIPAL === */
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--border-gray);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--cambridge-blue);
+            text-align: center;
+            font-size: 2.2rem;
+            margin: 0 0 20px 0;
+        }
+
+        /* === TIMER === */
+        .timer-badge {
+            display: block;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, var(--cambridge-blue), var(--cambridge-dark));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            width: fit-content;
+            box-shadow: 0 4px 12px rgba(0,47,108,0.35);
+            border: 3px solid #001a3d;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .timer-badge.time-up {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* === INSTRUCCIONES === */
+        .instructions {
+            background: #fff9db;
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 5px solid #f76707;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* === IMAGEN PRINCIPAL === */
+        .main-image-box {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .main-image {
+            max-width: 300px;
+            width: 100%;
+            border-radius: 15px;
+            border: 4px solid var(--border-gray);
+            cursor: zoom-in;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .main-image:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--cambridge-blue);
+        }
+
+        /* === TEXTO DE LECTURA === */
+        .reading-text {
+            font-size: 1.4rem;
+            line-height: 2.2;
+            font-family: 'Comic Neue', cursive;
+            color: var(--text-dark);
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid var(--border-gray);
+        }
+
+        .example-word {
+            font-weight: bold;
+            color: var(--duolingo-red);
+            text-decoration: underline;
+        }
+
+        input[type="text"] {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3rem;
+            width: 140px;
+            border: none;
+            border-bottom: 3px solid var(--cambridge-blue);
+            text-align: center;
+            color: var(--cambridge-blue);
+            outline: none;
+            padding: 3px 8px;
+            margin: 0 5px;
+            background: transparent;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        input[type="text"]:focus:not(:disabled) {
+            background-color: #e3f2fd;
+            border-bottom-color: var(--duolingo-blue);
+            border-bottom-width: 4px;
+        }
+
+        input:disabled {
+            background: #f5f5f5;
+            border-bottom: 3px solid #ccc;
+            cursor: not-allowed;
+            opacity: 1;
+        }
+
+        .correct-ans { 
+            color: var(--success-green) !important; 
+            border-bottom: 4px solid var(--success-green) !important; 
+            background: #e8f5e9;
+            border-radius: 6px;
+            padding: 3px 8px;
+        }
+
+        .wrong-ans { 
+            color: var(--duolingo-red) !important; 
+            border-bottom: 4px solid var(--duolingo-red) !important; 
+            background: #ffebee;
+            border-radius: 6px;
+            padding: 3px 8px;
+        }
+
+        /* === CAJA DE VOCABULARIO === */
+        .vocab-box {
+            margin-top: 35px;
+            text-align: center;
+            border: 3px dashed var(--border-gray);
+            padding: 25px;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+
+        .vocab-image {
+            max-width: 100%;
+            width: auto;
+            max-height: 220px;
+            cursor: zoom-in;
+            border-radius: 12px;
+            border: 3px solid var(--border-gray);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .vocab-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            border-color: var(--cambridge-blue);
+        }
+
+        .vocab-hint {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 12px;
+            font-style: italic;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        /* === BOTÓN CHECK === */
+        #checkBtn {
+            display: none;
+            margin: 35px auto 20px;
+            padding: 16px 50px;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, var(--cambridge-blue), var(--cambridge-dark));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 var(--cambridge-dark);
+        }
+
+        #checkBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 var(--cambridge-dark);
+        }
+
+        #checkBtn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 var(--cambridge-dark);
+        }
+
+        #checkBtn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* === RESULTADO === */
+        .result-display {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 3px solid #64b5f6;
+            margin-top: 25px;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--cambridge-blue);
+            font-family: 'Fredoka One', cursive;
+            margin: 15px 0;
+        }
+
+        /* === MODAL ZOOM === */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            cursor: zoom-out;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 15px;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0,0,0,0.6);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(255,75,75,0.8);
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; gap: 12px; padding: 12px 20px; }
+            .container { padding: 25px; }
+            h1 { font-size: 1.8rem; }
+            .reading-text { font-size: 1.2rem; line-height: 2; padding: 15px; }
+            input[type="text"] { width: 120px; font-size: 1.1rem; }
+            #checkBtn { font-size: 1.2rem; padding: 14px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === NAVBAR SUPERIOR === -->
+<nav class="top-navbar">
+    <div class="nav-title">✍️ Writing Part 4</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<!-- === MODAL ZOOM === -->
+<div id="imageModal" class="modal" onclick="closeZoomOnOverlay(event)">
+    <span class="close-modal" onclick="closeZoom()">&times;</span>
+    <img class="modal-content" id="imgZoomed" draggable="false">
+</div>
+
+<!-- === CONTENEDOR PRINCIPAL === -->
+<div class="container">
+    <h1>Reading and Writing PART 4</h1>
+    <div class="timer-badge" id="timer">15:00</div>
+    
+    <div class="instructions">
+        Read this. Choose a word from the box. Write the correct word next to numbers 1-5. There is one example.
+    </div>
+
+    <!-- Imagen Principal -->
+    <div class="main-image-box">
+        <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778939529/rabbit_ddlvka.jpg" 
+             class="main-image" 
+             alt="Rabbit" 
+             onclick="openZoom(this)" 
+             draggable="false"
+             title="🔍 Click to zoom">
+    </div>
+
+    <!-- Texto de Lectura -->
+    <div class="reading-text" id="quiz-text">
+        My name is Bill. I'm Bill the rabbit. I'm Sue's pet and I live in her <span class="example-word">house</span>. 
+        I'm a small animal. I've got four 
+        <input type="text" id="ans1" placeholder="1" oninput="checkCompletion()"> (1), 
+        two very long <input type="text" id="ans2" placeholder="2" oninput="checkCompletion()"> (2), 
+        two eyes and a small mouth. My tail is short. 
+        I don't eat meat. I like eating <input type="text" id="ans3" placeholder="3" oninput="checkCompletion()"> (3). 
+        Carrots are my favourite food. I drink <input type="text" id="ans4" placeholder="4" oninput="checkCompletion()"> (4). 
+        In the afternoon I play in the <input type="text" id="ans5" placeholder="5" oninput="checkCompletion()"> (5) with Susan. 
+        She's nice and I like her very much.
+    </div>
+
+    <!-- Caja de Vocabulario -->
+    <div class="vocab-box">
+        <p class="vocab-hint">📝 Vocabulary words - <strong>Click image to zoom 🔍</strong></p>
+        <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778939531/pictures_rnja8r.png" 
+             class="vocab-image" 
+             alt="Vocabulary"
+             onclick="openZoom(this)"
+             draggable="false"
+             title="🔍 Click to zoom">
+    </div>
+
+    <button id="checkBtn" onclick="finishExercise()">✅ CHECK Answers</button>
+    <div id="result" class="result-display"></div>
+</div>
+
+<script>
+    // === CONFIGURACIÓN ===
+    const EXAM_CONFIG = {
+        TIME_LIMIT: 15 * 60,
+        CATEGORY_KEY: 'exam_w'  // ✅ CAMBIADO: 'exam_w' para Writing (20%)
+    };
+
+    const correctAnswers = {
+        ans1: "legs",
+        ans2: "ears", 
+        ans3: "vegetables",
+        ans4: "water",
+        ans5: "garden"
+    };
+
+    const TOTAL_QUESTIONS = Object.keys(correctAnswers).length;
+
+    let studentName = '';
+    let timeLeft = EXAM_CONFIG.TIME_LIMIT;
+    let timerInterval = null;
+    let isEvaluated = false;
+
+    const timerDisplay = document.getElementById('timer');
+    const checkBtn = document.getElementById('checkBtn');
+    const resultDiv = document.getElementById('result');
+    const modal = document.getElementById('imageModal');
+    const zoomedImg = document.getElementById('imgZoomed');
+    const inputs = document.querySelectorAll('input[type="text"]');
+
+    // === INICIALIZACIÓN ===
+    document.addEventListener('DOMContentLoaded', () => {
+        studentName = localStorage.getItem('exam_student_name');
+        if (!studentName) {
+            alert("⚠️ Please login from the main index first!");
+            window.location.href = '../index.html';
+            return;
+        }
+        
+        console.log(`✅ Writing Part 4 loaded for: ${studentName}`);
+        initTimer();
+        checkCompletion();
+    });
+
+    // ⏱️ TIMER REGRESIVO
+    function initTimer() {
+        timeLeft = EXAM_CONFIG.TIME_LIMIT;
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (isEvaluated) {
+                clearInterval(timerInterval);
+                return;
+            }
+            
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.classList.add('time-up');
+                if (!isEvaluated) finishExercise();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function checkCompletion() {
+        if (isEvaluated) return;
+        let allFilled = true;
+        inputs.forEach(input => { 
+            if (input.value.trim() === "") allFilled = false; 
+        });
+        checkBtn.style.display = allFilled ? 'block' : 'none';
+    }
+
+    // 🔍 ZOOM
+    function openZoom(imgEl) {
+        modal.classList.add('active');
+        zoomedImg.src = imgEl.src;
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeZoom() { 
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        zoomedImg.src = '';
+    }
+    
+    function closeZoomOnOverlay(event) {
+        if (event.target === modal) closeZoom();
+    }
+    
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') closeZoom(); 
+    });
+
+    // ✅ FINALIZAR
+    function finishExercise() {
+        if (isEvaluated) return;
+        isEvaluated = true;
+        
+        clearInterval(timerInterval);
+        let score = 0;
+        
+        inputs.forEach(input => {
+            const userAns = input.value.trim().toLowerCase();
+            const correctAns = correctAnswers[input.id];
+            
+            if (userAns === correctAns) {
+                score++;
+                input.classList.add('correct-ans');
+            } else {
+                input.classList.add('wrong-ans');
+            }
+            
+            input.disabled = true;
+            input.style.cursor = 'not-allowed';
+        });
+        
+        // Guardar resultado
+        saveExamResult(score, TOTAL_QUESTIONS);
+        showFinalResult(score);
+        
+        checkBtn.disabled = true;
+        checkBtn.textContent = '✓ Completed';
+        checkBtn.style.display = 'none';
+        
+        setTimeout(() => {
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            alert(`🎉 Writing Completed!\nYour score: ${score}/${TOTAL_QUESTIONS}\nProgress saved!`);
+        }, 300);
+    }
+
+    function saveExamResult(correct, total) {
+        const result = {
+            correct: correct,
+            total: total,
+            percentage: Math.round((correct / total) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        // ✅ Guardar con clave CORRECTA: exam_w_[nombre]
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Result saved to ${EXAM_CONFIG.CATEGORY_KEY}: ${correct}/${total} (${result.percentage}%)`);
+    }
+
+    function showFinalResult(score) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <h3 style="margin:0 0 15px; font-family:'Fredoka One',cursive; color:var(--cambridge-blue);">🎉 Well done!</h3>
+            <div class="result-score">${score} / 5</div>
+            <div style="font-size:1rem; color:#555; line-height:1.6;">
+                <span style="color:var(--success-green); font-weight:800;">🟢 Green</span> = Correct ✓ &nbsp;|&nbsp; 
+                <span style="color:var(--duolingo-red); font-weight:800;">🔴 Red</span> = Incorrect ✗
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>

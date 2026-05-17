@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <title>Cambridge English: Starters Listening Part 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cambridge-blue: #002F6C;
+            --cambridge-dark: #001F4D;
+            --duolingo-blue: #1CB0F6;
+            --duolingo-red: #FF4B4B;
+            --text-dark: #222222;
+            --bg-light: #F4F6F9;
+            --border-gray: #D1D5DB;
+            --correct-color: #2E7D32;
+            --wrong-color: #C62828;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === */
+        .top-navbar {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--cambridge-blue);
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 0 var(--cambridge-dark);
+            border: 3px solid #1a4a7a;
+        }
+
+        .nav-title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home {
+            font-family: 'Fredoka One', cursive;
+            background: var(--duolingo-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #c41e1e;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-home:hover {
+            background: #ff3b3b;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 8px solid var(--cambridge-blue);
+            margin: 10px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--cambridge-blue);
+            text-align: left;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 10px;
+        }
+        .timer-badge {
+            float: right;
+            background: #EBF3FC;
+            color: var(--cambridge-blue);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            border: 1px solid #B4D3F2;
+        }
+        .timer-badge.time-up {
+            background: #FFEBEE;
+            color: var(--wrong-color);
+            border-color: #FFCDD2;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .instruction {
+            font-size: 1.4rem;
+            background: #FFF9E6;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 6px solid #FFC107;
+            line-height: 1.5;
+            color: #333;
+        }
+        .audio-player-container {
+            background: #F8F9FA;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        .audio-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .audio-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 90px;
+        }
+        .btn-audio {
+            background: var(--cambridge-blue);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+            position: relative;
+        }
+        .btn-audio::after {
+            content: attr(data-remaining);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E65100;
+            color: white;
+            font-size: 11px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        .btn-audio:hover:not(:disabled) {
+            background: var(--cambridge-dark);
+        }
+        .btn-audio:disabled {
+            background: #E0E0E0;
+            color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        .btn-audio.max-reached::after {
+            content: "✓";
+            background: var(--correct-color);
+        }
+        .audio-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+        .audio-status {
+            font-size: 11px;
+            font-weight: 600;
+            color: #777;
+            margin-top: 2px;
+        }
+        .audio-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--cambridge-blue);
+        }
+        .visualizer {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 25px;
+        }
+        .bar {
+            width: 4px;
+            height: 8px;
+            background: var(--cambridge-blue);
+            border-radius: 2px;
+        }
+        .playing .bar {
+            animation: wave 0.8s infinite ease-in-out;
+        }
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 25px; }
+        }
+        .main-img {
+            width: 100%;
+            border-radius: 4px;
+            margin: 20px 0;
+            border: 1px solid var(--border-gray);
+            pointer-events: none;
+        }
+        .example-section {
+            background: #FAFAFA;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 25px 0;
+            border: 1px dashed var(--cambridge-blue);
+        }
+        .example-title {
+            font-weight: 700;
+            color: var(--cambridge-blue);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+        .question-row {
+            font-size: 1.5rem;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            line-height: 1.6;
+            gap: 10px;
+        }
+        .answer-style {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.6rem;
+            border-bottom: 2px solid #333;
+            padding: 0 10px;
+        }
+        input[type="text"] {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000;
+            border: none;
+            border-bottom: 2px solid var(--cambridge-blue);
+            padding: 2px 8px;
+            width: 160px;
+            outline: none;
+            text-align: center;
+            background: transparent;
+            transition: border-color 0.2s;
+        }
+        input:focus:not(:disabled) {
+            border-bottom-color: var(--cambridge-dark);
+            background-color: #F0F4F8;
+        }
+        input:disabled {
+            color: #555;
+            border-bottom-color: #999;
+            cursor: not-allowed;
+        }
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0 10px;
+            flex-wrap: wrap;
+        }
+        button.action-btn {
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 12px 35px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 150px;
+        }
+        #fs-btn { background: #616161; color: white; }
+        #fs-btn:hover { background: #424242; }
+        #check-btn { background: var(--cambridge-blue); color: white; }
+        #check-btn:hover { background: var(--cambridge-dark); }
+        #next-btn { background: var(--correct-color); color: white; display: none; }
+        #next-btn:hover { background: #1B5E20; }
+        
+        button:disabled {
+            background: #E0E0E0 !important;
+            color: #9E9E9E !important;
+            cursor: not-allowed;
+        }
+        .feedback {
+            font-size: 1.6rem;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+        .feedback.correct { color: var(--correct-color); }
+        .feedback.wrong { color: var(--wrong-color); }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1rem;
+            border-radius: 4px;
+        }
+        .locked-overlay.show { display: flex; }
+        .input-wrapper { position: relative; display: inline-flex; align-items: center; }
+        
+        :fullscreen .container {
+            max-width: 90%;
+            height: 95vh;
+            overflow-y: auto;
+            border-radius: 0;
+            padding: 50px;
+        }
+        @media (max-width: 600px) {
+            .top-navbar { flex-direction: column; gap: 10px; padding: 12px 20px; }
+            .container { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .timer-badge { float: none; display: inline-block; margin-bottom: 15px; }
+            .question-row { font-size: 1.3rem; flex-direction: column; align-items: flex-start; }
+            input[type="text"] { width: 100%; text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === NAVBAR SUPERIOR CON BOTÓN DE REGRESO === -->
+<nav class="top-navbar">
+    <div class="nav-title">🎧 Listening Part 2</div>
+    <a href="../index.html" class="btn-home">🏠 Volver al Inicio</a>
+</nav>
+
+<div class="container notranslate" id="quiz-container" translate="no">
+    <div class="timer-badge notranslate" id="timerDisplay">15:00</div>
+    <h1 class="notranslate">Listening Part 2</h1>
+    
+    <div class="instruction notranslate">
+        <strong>Read the questions. Listen and write a name or a number. There are two examples.</strong>
+    </div>
+
+    <div class="audio-player-container notranslate" id="player-box">
+        <div class="audio-controls">
+            <div class="audio-box">
+                <button id="playExampleBtn" class="btn-audio notranslate" title="EXAMPLE" data-remaining="2" data-max="2">▶</button>
+                <span class="audio-label notranslate">EXAMPLE</span>
+                <span class="audio-status notranslate" id="exampleStatus">Ready</span>
+            </div>
+            <div class="audio-box">
+                <button id="playPartBtn" class="btn-audio notranslate" title="PART II" data-remaining="4" data-max="4">▶</button>
+                <span class="audio-label notranslate">PART II</span>
+                <span class="audio-status notranslate" id="partStatus">Ready</span>
+            </div>
+        </div>
+        <div class="audio-text notranslate" id="status-txt">Click an audio button to listen</div>
+        <div class="visualizer notranslate" id="viz">
+            <div class="bar" style="animation-delay: 0.1s"></div>
+            <div class="bar" style="animation-delay: 0.3s"></div>
+            <div class="bar" style="animation-delay: 0.5s"></div>
+            <div class="bar" style="animation-delay: 0.2s"></div>
+            <div class="bar" style="animation-delay: 0.4s"></div>
+        </div>
+    </div>
+
+    <img src="https://res.cloudinary.com/dslu7arqa/image/upload/v1778420781/02_listening_d0rzij.png" alt="Exercise Image" class="main-img notranslate" draggable="false">
+
+    <div class="example-section notranslate">
+        <div class="example-title">Examples</div>
+        <div class="question-row">
+            What is the boy's name? &nbsp; <span class="answer-style notranslate">Sam</span>
+        </div>
+        <div class="question-row">
+            How old is he? &nbsp; <span class="answer-style notranslate">9</span>
+        </div>
+    </div>
+
+    <div class="question-row notranslate">
+        1. What is the English teacher's name? &nbsp; Mr.&nbsp;
+        <span class="input-wrapper"><input type="text" id="q1" autocomplete="off" class="notranslate"><div class="locked-overlay">Locked</div></span>
+        <span id="f1" class="feedback notranslate"></span>
+    </div>
+
+    <div class="question-row notranslate">
+        2. What is the name of Sam's dog? &nbsp;
+        <span class="input-wrapper"><input type="text" id="q2" autocomplete="off" class="notranslate"><div class="locked-overlay">Locked</div></span>
+        <span id="f2" class="feedback notranslate"></span>
+    </div>
+
+    <div class="question-row notranslate">
+        3. How many cats has Sam got? &nbsp;
+        <span class="input-wrapper"><input type="text" id="q3" autocomplete="off" class="notranslate"><div class="locked-overlay">Locked</div></span>
+        <span id="f3" class="feedback notranslate"></span>
+    </div>
+
+    <div class="question-row notranslate">
+        4. What is the name of his favourite cat? &nbsp;
+        <span class="input-wrapper"><input type="text" id="q4" autocomplete="off" class="notranslate"><div class="locked-overlay">Locked</div></span>
+        <span id="f4" class="feedback notranslate"></span>
+    </div>
+
+    <div class="question-row notranslate">
+        5. How old is his favourite cat? &nbsp;
+        <span class="input-wrapper"><input type="text" id="q5" autocomplete="off" class="notranslate"><div class="locked-overlay">Locked</div></span>
+        &nbsp; months.
+        <span id="f5" class="feedback notranslate"></span>
+    </div>
+
+    <div class="btn-container notranslate">
+        <button id="fs-btn" class="action-btn notranslate" onclick="toggleFullScreen()">📺 Full Screen</button>
+        <button id="check-btn" class="action-btn notranslate" onclick="checkAnswers()">✅ CHECK</button>
+        <button id="next-btn" class="action-btn notranslate" onclick="goToNextExercise()">➡️ NEXT: Listening 2</button>
+    </div>
+</div>
+
+<audio id="exampleAudio" preload="auto" crossorigin="anonymous" class="notranslate">
+    <source src="https://res.cloudinary.com/dslu7arqa/video/upload/v1778959773/03_explanation_part_II_hqeb7c.mp3" type="audio/mpeg">
+</audio>
+<audio id="partAudio" preload="auto" crossorigin="anonymous" class="notranslate">
+    <source src="https://res.cloudinary.com/dslu7arqa/video/upload/v1778959778/04_part_II_vwzbwa.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // === CONFIGURACIÓN - SIN SESSION TOKEN NI BLOQUEOS ===
+    const EXAM_CONFIG = {
+        TIME_LIMIT: 15 * 60,
+        AUDIO_LIMITS: { example: 2, part: 4 },
+        CATEGORY_KEY: 'exam_l1' // Listening 1 = 10%
+    };
+
+    const answers = { q1: "white", q2: "grey", q3: "5", q4: "lorry", q5: "4" };
+    const TOTAL_QUESTIONS = Object.keys(answers).length;
+
+    // Obtener nombre del estudiante desde el index principal
+    let studentName = '';
+    let storagePrefix = '';
+    
+    const container = document.getElementById('quiz-container');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const exampleAudio = document.getElementById('exampleAudio');
+    const partAudio = document.getElementById('partAudio');
+    const playExampleBtn = document.getElementById('playExampleBtn');
+    const playPartBtn = document.getElementById('playPartBtn');
+    const exampleStatus = document.getElementById('exampleStatus');
+    const partStatus = document.getElementById('partStatus');
+    const statusTxt = document.getElementById('status-txt');
+    const visualizer = document.getElementById('viz');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    let examStartTime = null, timerInterval = null, examCompleted = false, isEvaluated = false;
+    let currentPlayingAudio = null;
+    let currentPlayingBtn = null;
+    let currentPlayingStatus = null;
+    let currentPlayingKey = null;
+    let currentPlayingMax = null;
+
+    // === INICIALIZACIÓN - SIN BLOQUEOS ===
+    document.addEventListener('DOMContentLoaded', () => {
+        // Obtener nombre del estudiante
+        studentName = localStorage.getItem('exam_student_name');
+        if (!studentName) {
+            alert("⚠️ Please login from the main index first!");
+            window.location.href = '../index.html';
+            return;
+        }
+        
+        // Crear prefijo único por estudiante
+        storagePrefix = EXAM_CONFIG.CATEGORY_KEY + '_' + studentName.replace(/\s+/g, '_') + '_';
+        
+        console.log(`✅ Listening Part 2 loaded for: ${studentName}`);
+        
+        // Iniciar sin verificar si ya está completado
+        initTimer();
+        initAudioButtons();
+        setupSecurity();
+    });
+
+    function initTimer() {
+        // Siempre iniciar timer desde cero para cada sesión
+        examStartTime = Date.now();
+        startCountdownTimer();
+    }
+
+    function startCountdownTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        const update = () => {
+            if (examCompleted || !examStartTime) return;
+            const elapsed = Math.floor((Date.now() - examStartTime) / 1000);
+            const remaining = EXAM_CONFIG.TIME_LIMIT - elapsed;
+            
+            if (remaining <= 0) {
+                timerDisplay.textContent = "00:00";
+                timerDisplay.classList.add('time-up');
+                clearInterval(timerInterval);
+                if (!isEvaluated) checkAnswers();
+                return;
+            }
+            timerDisplay.textContent = formatTime(remaining);
+        };
+        update();
+        timerInterval = setInterval(update, 1000);
+    }
+
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) return '00:00';
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const r = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${r}`;
+    }
+
+    function stopTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        examCompleted = true;
+    }
+
+    function initAudioButtons() {
+        // Usar claves únicas por estudiante
+        const exPlaysKey = storagePrefix + 'ex_plays';
+        const ptPlaysKey = storagePrefix + 'pt_plays';
+        
+        const exPlays = parseInt(localStorage.getItem(exPlaysKey) || '0');
+        const ptPlays = parseInt(localStorage.getItem(ptPlaysKey) || '0');
+        
+        updateAudioUI(playExampleBtn, exampleStatus, exPlays, EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        updateAudioUI(playPartBtn, partStatus, ptPlays, EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+        
+        playExampleBtn.onclick = () => handleAudioClick(exampleAudio, playExampleBtn, exampleStatus, 'example', EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        playPartBtn.onclick = () => handleAudioClick(partAudio, playPartBtn, partStatus, 'part', EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+        
+        exampleAudio.onended = () => handleAudioEnded(exPlaysKey);
+        partAudio.onended = () => handleAudioEnded(ptPlaysKey);
+    }
+
+    function updateAudioUI(btn, status, plays, max, storageKey) {
+        const remaining = Math.max(0, max - plays);
+        btn.dataset.remaining = remaining;
+        btn.dataset.max = max;
+        if (plays >= max) {
+            btn.disabled = true;
+            btn.textContent = '✔';
+            btn.classList.add('max-reached');
+            status.textContent = 'Finished';
+        } else {
+            btn.disabled = false;
+            btn.textContent = '▶';
+            btn.classList.remove('max-reached');
+            status.textContent = `${remaining} left`;
+        }
+    }
+
+    function handleAudioClick(audio, btn, status, name, max, storageKey) {
+        if (isEvaluated) return;
+        
+        if (currentPlayingAudio === audio) {
+            audio.pause();
+            audio.currentTime = 0;
+            resetAudioPlayerUI();
+            return;
+        }
+
+        if (currentPlayingAudio && currentPlayingAudio !== audio) {
+            currentPlayingAudio.pause();
+            currentPlayingAudio.currentTime = 0;
+        }
+
+        let plays = parseInt(localStorage.getItem(storageKey) || '0');
+        if (plays >= max) return;
+
+        currentPlayingAudio = audio;
+        currentPlayingBtn = btn;
+        currentPlayingStatus = status;
+        currentPlayingKey = storageKey;
+        currentPlayingMax = max;
+
+        playExampleBtn.textContent = '▶';
+        playPartBtn.textContent = '▶';
+        btn.textContent = '⏸';
+        
+        visualizer.classList.add('playing');
+        statusTxt.textContent = `Playing: ${name.toUpperCase()}`;
+        
+        audio.play().catch(() => {
+            resetAudioPlayerUI();
+        });
+    }
+
+    function handleAudioEnded(storageKey) {
+        if (!currentPlayingAudio) return;
+
+        let plays = parseInt(localStorage.getItem(storageKey) || '0');
+        plays++;
+        localStorage.setItem(storageKey, plays.toString());
+        
+        updateAudioUI(currentPlayingBtn, currentPlayingStatus, plays, currentPlayingMax, storageKey);
+        
+        currentPlayingAudio = null;
+        currentPlayingBtn = null;
+        currentPlayingStatus = null;
+        currentPlayingKey = null;
+        currentPlayingMax = null;
+
+        resetAudioPlayerUI();
+    }
+
+    function resetAudioPlayerUI() {
+        playExampleBtn.textContent = '▶';
+        playPartBtn.textContent = '▶';
+        
+        const exPlaysKey = storagePrefix + 'ex_plays';
+        const ptPlaysKey = storagePrefix + 'pt_plays';
+        const exPlays = parseInt(localStorage.getItem(exPlaysKey) || '0');
+        const ptPlays = parseInt(localStorage.getItem(ptPlaysKey) || '0');
+        
+        updateAudioUI(playExampleBtn, exampleStatus, exPlays, EXAM_CONFIG.AUDIO_LIMITS.example, exPlaysKey);
+        updateAudioUI(playPartBtn, partStatus, ptPlays, EXAM_CONFIG.AUDIO_LIMITS.part, ptPlaysKey);
+
+        visualizer.classList.remove('playing');
+        statusTxt.textContent = 'Click an audio button to listen';
+        currentPlayingAudio = null;
+    }
+
+    function setupSecurity() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.shiftKey && ['J','I','C'].includes(e.key))) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('contextmenu', (e) => { 
+            if (!e.target.closest('button')) e.preventDefault(); 
+        });
+    }
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            (container.requestFullscreen || container.webkitRequestFullscreen || container.mozRequestFullScreen || container.msRequestFullscreen)?.call(container).catch(console.log);
+        } else {
+            (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen)?.call(document);
+        }
+    }
+
+    function checkAnswers() {
+        if (isEvaluated) return;
+        isEvaluated = true;
+        
+        if (currentPlayingAudio) {
+            currentPlayingAudio.pause();
+            currentPlayingAudio.currentTime = 0;
+            resetAudioPlayerUI();
+        }
+        
+        stopTimer();
+        
+        let score = 0;
+
+        Object.keys(answers).forEach((id, i) => {
+            const input = document.getElementById(id);
+            const feedback = document.getElementById('f' + (i+1));
+            const user = input.value.trim().toLowerCase();
+            
+            const wrapper = input.closest('.input-wrapper');
+            if (wrapper) wrapper.querySelector('.locked-overlay')?.classList.add('show');
+            input.disabled = true;
+            
+            if (user === answers[id]) {
+                feedback.textContent = '✅';
+                feedback.className = 'feedback correct';
+                input.style.borderBottomColor = 'var(--correct-color)';
+                score++;
+            } else {
+                feedback.innerHTML = `❌ <small style="font-size:1.1rem;color:#555;font-weight:400;">(${answers[id]})</small>`;
+                feedback.className = 'feedback wrong';
+                input.style.borderBottomColor = 'var(--wrong-color)';
+            }
+        });
+
+        // === GUARDAR RESULTADO EN EL SISTEMA PRINCIPAL ===
+        saveExamResult(score, TOTAL_QUESTIONS);
+
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-block';
+        playExampleBtn.disabled = true;
+        playPartBtn.disabled = true;
+
+        setTimeout(() => alert(`🎉 Section Completed!\nYour score: ${score}/${TOTAL_QUESTIONS}\nProgress saved!`), 200);
+    }
+
+    // === FUNCIÓN PARA GUARDAR EN EL SISTEMA PRINCIPAL ===
+    function saveExamResult(correct, total) {
+        const result = {
+            correct: correct,
+            total: total,
+            percentage: Math.round((correct / total) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        // Guardar con la clave que el index.html espera
+        localStorage.setItem(EXAM_CONFIG.CATEGORY_KEY + '_' + studentName, JSON.stringify(result));
+        
+        // Disparar actualización en el index
+        localStorage.setItem('exam_trigger_update', Date.now().toString());
+        
+        console.log(`✅ Result saved: ${correct}/${total} (${result.percentage}%)`);
+    }
+
+    function goToNextExercise() {
+        window.location.href = "../listening 2/index.html";
+    }
+</script>
+</body>
+</html>
