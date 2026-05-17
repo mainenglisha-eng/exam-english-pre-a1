@@ -16,6 +16,7 @@
             --white: #FFFFFF;
             --text-dark: #3C3C3C;
             --border-gray: #E5E5E5;
+            --locked-gray: #95a5a6;
         }
 
         * { box-sizing: border-box; }
@@ -225,6 +226,44 @@
             border: 3px solid white;
         }
 
+        /* === CARD BLOQUEADA (COMPLETADA) === */
+        .card.locked {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            pointer-events: none;
+            filter: grayscale(0.3);
+            box-shadow: 0 4px 0 #ccc !important;
+            border-color: var(--locked-gray) !important;
+        }
+
+        .card.locked:hover {
+            transform: none !important;
+            border-color: var(--locked-gray) !important;
+            box-shadow: 0 4px 0 #ccc !important;
+        }
+
+        .card.locked::before {
+            content: "🔒";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--locked-gray);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 3px solid white;
+            z-index: 2;
+        }
+
+        .card.locked .card-score {
+            color: var(--locked-gray) !important;
+        }
+
         .icon { font-size: 2.5em; margin-bottom: 12px; }
         .card-title { font-weight: 700; font-size: 1.1em; margin-bottom: 5px; }
         .card-weight { font-size: 12px; color: #888; text-transform: uppercase; }
@@ -427,43 +466,43 @@
         </div>
 
         <div class="menu">
-            <a href="listening 1/index.html" class="card" id="card-listening1">
+            <a href="listening 1/index.html" class="card" id="card-listening1" data-category="exam_l1">
                 <span class="icon">🎧</span>
                 <span class="card-title">Listening 1</span>
                 <span class="card-weight">Weight: 10%</span>
                 <span class="card-score" id="score-listening1">Not started</span>
             </a>
 
-            <a href="listening 2/index.html" class="card" id="card-listening2">
+            <a href="listening 2/index.html" class="card" id="card-listening2" data-category="exam_l2">
                 <span class="icon">🎶</span>
                 <span class="card-title">Listening 2</span>
                 <span class="card-weight">Weight: 10%</span>
                 <span class="card-score" id="score-listening2">Not started</span>
             </a>
 
-            <a href="writing/index.html" class="card" id="card-writing">
+            <a href="writing/index.html" class="card" id="card-writing" data-category="exam_w">
                 <span class="icon">📝</span>
                 <span class="card-title">Writing</span>
                 <span class="card-weight">Weight: 20%</span>
                 <span class="card-score" id="score-writing">Not started</span>
             </a>
 
-            <a href="speaking/index.html" class="card" id="card-speaking">
+            <a href="speaking/index.html" class="card" id="card-speaking" data-category="exam_s">
                 <span class="icon">🎤</span>
                 <span class="card-title">Speaking</span>
                 <span class="card-weight">Weight: 20%</span>
                 <span class="card-score" id="score-speaking">Not started</span>
             </a>
 
-            <a href="reading/index.html" class="card" id="card-reading">
+            <a href="reading/index.html" class="card" id="card-reading" data-category="exam_r">
                 <span class="icon">📖</span>
                 <span class="card-title">Reading</span>
                 <span class="card-weight">Weight: 20%</span>
                 <span class="card-score" id="score-reading">Not started</span>
             </a>
 
-            <a href="vocabulary/index.html" class="card" id="card-vocabulary">
-                <span class="icon"></span>
+            <a href="vocabulary/index.html" class="card" id="card-vocabulary" data-category="exam_v">
+                <span class="icon">📚</span>
                 <span class="card-title">Vocabulary</span>
                 <span class="card-weight">Weight: 20%</span>
                 <span class="card-score" id="score-vocabulary">Not started</span>
@@ -513,8 +552,8 @@
     <script>
         // === CONFIGURACIÓN ===
         const CONFIG = {
-            // ⚠️ REEMPLAZA CON TU WEBHOOK REAL DE DISCORD
-            discordWebhook: "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL_HERE",
+            // ✅ TU WEBHOOK DE DISCORD AGREGADO AQUÍ
+            discordWebhook: "https://discordapp.com/api/webhooks/1469452628629913741/8cjv78gMP_1L7fqHF2jNMryW9o71dhNt3gNns5IkLjqGjmY0pvR59bNkeLqKR_-GyJnm",
             categories: [
                 { id: 'listening1', name: 'Listening 1', weight: 0.10, key: 'exam_l1' },
                 { id: 'listening2', name: 'Listening 2', weight: 0.10, key: 'exam_l2' },
@@ -545,9 +584,21 @@
                 updateDashboard();
             }
             
-            // Escuchar mensajes desde ejercicios (si se abren en misma ventana/popup)
             window.addEventListener('message', (e) => {
                 if (e.data?.type === 'examCompleted') updateDashboard();
+            });
+
+            // === BLOQUEO DE TARJETAS COMPLETADAS ===
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (this.classList.contains('locked')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const categoryName = this.querySelector('.card-title').textContent;
+                        alert(`🔒 ${categoryName} is already completed!\n\nYou cannot retake completed sections.`);
+                        return false;
+                    }
+                });
             });
         };
 
@@ -602,7 +653,7 @@
             localStorage.removeItem(KEYS.submitted);
         }
 
-        // === ACTUALIZAR DASHBOARD CON VALIDACIÓN ESTRICTA ===
+        // === ACTUALIZAR DASHBOARD CON BLOQUEO ===
         function updateDashboard() {
             if (!studentData.name) return;
             
@@ -617,7 +668,6 @@
                 const scoreEl = document.getElementById(`score-${cat.id}`);
                 const cardEl = document.getElementById(`card-${cat.id}`);
 
-                // Validación estricta
                 if (result && result.trim() !== '' && result !== 'null' && result !== 'undefined') {
                     try {
                         const data = JSON.parse(result);
@@ -632,7 +682,12 @@
                             
                             scoreEl.textContent = `${percent}% (${data.correct}/${data.total})`;
                             scoreEl.style.color = percent >= 70 ? 'var(--success-green)' : '#e67e22';
-                            cardEl.classList.add('completed');
+                            
+                            // ✅ MARCAR COMO COMPLETADO Y BLOQUEADO
+                            cardEl.classList.add('completed', 'locked');
+                            cardEl.setAttribute('aria-disabled', 'true');
+                            cardEl.title = `Completed: ${percent}% - Cannot be retaken`;
+                            
                             completed++;
 
                             if (cat.id.includes('listening')) listeningTotal += weighted;
@@ -680,9 +735,14 @@
         }
 
         function resetCardUI(catId) {
-            document.getElementById(`score-${catId}`).textContent = 'Not started';
-            document.getElementById(`score-${catId}`).style.color = '#888';
-            document.getElementById(`card-${catId}`).classList.remove('completed');
+            const cardEl = document.getElementById(`card-${catId}`);
+            const scoreEl = document.getElementById(`score-${catId}`);
+            
+            scoreEl.textContent = 'Not started';
+            scoreEl.style.color = '#888';
+            cardEl.classList.remove('completed', 'locked');
+            cardEl.removeAttribute('aria-disabled');
+            cardEl.title = '';
         }
 
         // === LIMPIAR DATOS CORRUPTOS ===
@@ -746,7 +806,7 @@
                 title: "🎓 English Final Exam - Submission",
                 color: 0x002F6C,
                 fields: [
-                    { name: " Student", value: `**${studentData.name}**`, inline: true },
+                    { name: "👤 Student", value: `**${studentData.name}**`, inline: true },
                     { name: "📚 Course", value: studentData.course, inline: true },
                     { name: "🏆 Final Score", value: `**${finalScore}%** - ${grade}`, inline: false },
                     { name: "📊 Breakdown", value: CONFIG.categories.map(c => 
@@ -762,7 +822,7 @@
                 const response = await fetch(CONFIG.discordWebhook, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [embed], username: "Exam Bot " })
+                    body: JSON.stringify({ embeds: [embed], username: "Exam Bot 🎓" })
                 });
 
                 if (!response.ok) throw new Error('Discord API error');
